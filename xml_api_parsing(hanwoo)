@@ -14,7 +14,7 @@ n<-1808
 results<-data.frame(farmerNm=rep(NA,n),farmAddr=rep(NA,n),SexNm=rep(NA,n),birthYMD=rep(NA,n),abattDate=rep(NA,n),animalNo=rep(NA,n),gradeNm=rep(NA,n),qgrade=rep(NA,n),wgrade=rep(NA,n),weight=rep(NA,n),windex=rep(NA,n))
 
 #API
-API_key<-"1x8x%2FQaoRO765K772DjwmmqCSJE4li1yuG8dUabYIrBfIuoc7tTcE6teHTfJYOqfNKMdmxMvby457gYU3IOM%2Fw%3D%3D"
+API_key<-"GET YOUR SERVICE KEY FROM data.go.kr"
 
 for(i in 0:(n-1)){
   nb=i+1
