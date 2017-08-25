@@ -10,9 +10,9 @@ library("XML")
 library("dplyr")
 
 #dataframe
-hanwoo<-read.csv("cattle.txt",colClasses=c("character"),col.names="Cattle_No")
-n<-nrow(hanwoo)
-results<-data.frame(farmerNm=rep(NA,n),farmAddr=rep(NA,n),SexNm=rep(NA,n),birthYMD=rep(NA,n),abattDate=rep(NA,n),month=rep(NA,n), animalNo=rep(NA,n),gradeNm=rep(NA,n),qgrade=rep(NA,n),wgrade=rep(NA,n),weight=rep(NA,n),windex=rep(NA,n))
+hanwoo<-read.csv("cattle.txt",colClasses=c("character"),col.names="Cattle_No") #read the dataframe
+n<-nrow(hanwoo) #number of animals 
+results<-data.frame(farmerNm=rep(NA,n),farmAddr=rep(NA,n),SexNm=rep(NA,n),birthYMD=rep(NA,n),butcheryYmd=rep(NA,n),month=rep(NA,n), animalNo=rep(NA,n),gradeNm=rep(NA,n),qgrade=rep(NA,n),wgrade=rep(NA,n),weight=rep(NA,n),windex=rep(NA,n))
 
 #API parsing
 API_key<-"GET YOUR SERVICE KEY FROM data.go.kr"
@@ -46,11 +46,11 @@ for(i in 0:(n-1)){
     results[nb,2]<-get_inform$farmAddr
     results[nb,3]<-get_inform$sexNm 
     results[nb,4]<-get_inform$birthYmd
-  
+    results[nb,5]<-get_inform$butcheryYmd
+    
     results[nb,7]<-get_issueNo$animalNo 
   
-    results[nb,5]<-get_hanwoo$abattDate
-    results[nb,6]<-(as.Date(get_hanwoo$abattDate)-as.Date(get_inform$birthYmd))/30.4166667
+    results[nb,6]<-(as.Date(get_inform$butcheryYmd)-as.Date(get_inform$birthYmd))/(365/12)
     results[nb,8]<-get_hanwoo$gradeNm 
     results[nb,9]<-get_hanwoo$qgrade 
     results[nb,10]<-get_hanwoo$wgrade 
@@ -63,6 +63,5 @@ for(i in 0:(n-1)){
 #%>% system.time()
 
 results<-filter(results, farmerNm != "NA") #delete NA
-results<-filter(results, SexNm = "거세") #filtering the steers
+results_steer<-filter(results, SexNm == "거세") #filtering the steers
 write.csv(results, "results.txt", row.names=FALSE) #write csv
-
