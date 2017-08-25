@@ -1,30 +1,32 @@
-#한우API가져오기
+#Carcass imformation API parsing (Hanwoo)
+
+#author: Youngjun Na
+#Email: ruminoreticulum@gmail.com
+#Github: https://github.com/YoungjunNa
+#Date: 8/25/2017
 
 #library
 library("XML")
 library("dplyr")
 
-#dataframe
 hanwoo<-read.csv("cattle.txt",colClasses=c("character"),col.names="Cattle_No")
-results<-data.frame(farmerNm=rep(NA,10000),farmAddr=rep(NA,10000),SexNm=rep(NA,10000),birthYMD=rep(NA,10000),abattDate=rep(NA,10000),animalNo=rep(NA,10000),gradeNm=rep(NA,10000),qgrade=rep(NA,10000),wgrade=rep(NA,10000),weight=rep(NA,10000),windex=rep(NA,10000))
+n<-1808
+results<-data.frame(farmerNm=rep(NA,n),farmAddr=rep(NA,n),SexNm=rep(NA,n),birthYMD=rep(NA,n),abattDate=rep(NA,n),animalNo=rep(NA,n),gradeNm=rep(NA,n),qgrade=rep(NA,n),wgrade=rep(NA,n),weight=rep(NA,n),windex=rep(NA,n))
 
 #API
-API_key<-"please get your api key"
+API_key<-"1x8x%2FQaoRO765K772DjwmmqCSJE4li1yuG8dUabYIrBfIuoc7tTcE6teHTfJYOqfNKMdmxMvby457gYU3IOM%2Fw%3D%3D"
 
-i<-0
-
-repeat{
+for(i in 0:(n-1)){
   nb=i+1
-  
   Cattle_No<-hanwoo[nb,]
   
-  #basic information
+  #import basic informations
   url1<-paste("http://data.ekape.or.kr/openapi-data/service/user/mtrace/breeding/cattle?cattleNo=",Cattle_No,"&ServiceKey=",API_key,sep="")
   xmlfile1<-xmlParse(url1)
   xmltop1<-xmlRoot(xmlfile1)
   get_inform<-xmlToDataFrame(getNodeSet(xmlfile1,"//item"),stringsAsFactors=FALSE)
   
-  #issueNo 가져오기
+  #import an issueNo
   url2<-paste("http://data.ekape.or.kr/openapi-data/service/user/grade/confirm/issueNo?animalNo=",Cattle_No,"&ServiceKey=",API_key,sep="")
   xmlfile2<-xmlParse(url2)
   xmltop2<-xmlRoot(xmlfile2)
@@ -32,30 +34,30 @@ repeat{
   
   Issue_No<-gsub(" ","",as.character(get_issueNo$issueNo)) #OR Issue_No<-stringr::str_trim(as.character(get_issueNo$issueNo))
   
-  #도체정보 가져오기
+  #import the carcass characteristics (by using the IssueNo)
   url3<-paste("http://data.ekape.or.kr/openapi-data/service/user/grade/confirm/cattle?issueNo=",Issue_No,"&ServiceKey=",API_key,sep="")
   xmlfile3<-xmlParse(url3)
   xmltop3<-xmlRoot(xmlfile3)
-  get_hanwoo<-xmlToDataFrame(getNodeSet(xmlfile3,"//item"),stringsAsFactors=FALSE) %>% try(silent=TRUE)
+  get_hanwoo<-xmlToDataFrame(getNodeSet(xmlfile3,"//item"),stringsAsFactors=FALSE)
   
-  results[nb,1]<-get_inform$farmNm 
-  results[nb,2]<-get_inform$farmAddr
-  results[nb,3]<-get_inform$sexNm 
-  results[nb,4]<-get_inform$birthYmd
+  if(is.null(get_hanwoo[1,1]) == FALSE){
+    results[nb,1]<-get_inform$farmNm 
+    results[nb,2]<-get_inform$farmAddr
+    results[nb,3]<-get_inform$sexNm 
+    results[nb,4]<-get_inform$birthYmd
   
-  results[nb,6]<-get_issueNo$animalNo 
+    results[nb,6]<-get_issueNo$animalNo 
   
-  results[nb,5]<-get_hanwoo$abattDate %>% try(silent=TRUE)
-  results[nb,7]<-get_hanwoo$gradeNm %>% try(silent=TRUE)
-  results[nb,8]<-get_hanwoo$qgrade %>% try(silent=TRUE)
-  results[nb,9]<-get_hanwoo$wgrade %>% try(silent=TRUE)
-  results[nb,10]<-get_hanwoo$weight %>% try(silent=TRUE)
-  results[nb,11]<-get_hanwoo$windex %>% try(silent=TRUE)
-  
-  if(nb==1807){break}
-}
+    results[nb,5]<-get_hanwoo$abattDate 
+    results[nb,7]<-get_hanwoo$gradeNm 
+    results[nb,8]<-get_hanwoo$qgrade 
+    results[nb,9]<-get_hanwoo$wgrade 
+    results[nb,10]<-get_hanwoo$weight 
+    results[nb,11]<-get_hanwoo$windex
+  }
+} 
 
 #%>% try(silent=TRUE)
-#write.csv(results, "results.txt", row.names=FALSE)
+#%>% system.time()
 
-
+write.csv(results, "results.txt", row.names=FALSE, na.rm=TRUE)
