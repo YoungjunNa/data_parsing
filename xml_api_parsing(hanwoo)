@@ -7,10 +7,9 @@
 
 #library
 library("XML")
-library("dplyr")
 
 hanwoo<-read.csv("cattle.txt",colClasses=c("character"),col.names="Cattle_No")
-n<-1808
+n<-nrow(hanwoo)
 results<-data.frame(farmerNm=rep(NA,n),farmAddr=rep(NA,n),SexNm=rep(NA,n),birthYMD=rep(NA,n),abattDate=rep(NA,n),animalNo=rep(NA,n),gradeNm=rep(NA,n),qgrade=rep(NA,n),wgrade=rep(NA,n),weight=rep(NA,n),windex=rep(NA,n))
 
 #API
@@ -60,4 +59,6 @@ for(i in 0:(n-1)){
 #%>% try(silent=TRUE)
 #%>% system.time()
 
-write.csv(results, "results.txt", row.names=FALSE, na.rm=TRUE)
+write.csv(results, "results.txt", row.names=FALSE)
+
+
