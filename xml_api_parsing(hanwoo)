@@ -7,12 +7,13 @@
 
 #library
 library("XML")
+library("dplyr")
 
 hanwoo<-read.csv("cattle.txt",colClasses=c("character"),col.names="Cattle_No")
 n<-nrow(hanwoo)
 results<-data.frame(farmerNm=rep(NA,n),farmAddr=rep(NA,n),SexNm=rep(NA,n),birthYMD=rep(NA,n),abattDate=rep(NA,n),animalNo=rep(NA,n),gradeNm=rep(NA,n),qgrade=rep(NA,n),wgrade=rep(NA,n),weight=rep(NA,n),windex=rep(NA,n))
 
-#API
+#API parsing
 API_key<-"GET YOUR SERVICE KEY FROM data.go.kr"
 
 for(i in 0:(n-1)){
@@ -59,6 +60,9 @@ for(i in 0:(n-1)){
 #%>% try(silent=TRUE)
 #%>% system.time()
 
-write.csv(results, "results.txt", row.names=FALSE)
+results<-filter(results, farmerNm != "NA") #delete NA
+write.csv(results, "results.txt", row.names=FALSE) #write csv
 
+results<-mutate(results, weight2=as.numeric(weight)) #character -> numeric
+results<-mutate(results, windex2=as.numeric(windex)) #character -> numeric
 
