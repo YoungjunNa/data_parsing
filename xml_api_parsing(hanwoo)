@@ -3,7 +3,7 @@
 #author: Youngjun Na
 #Email: ruminoreticulum@gmail.com
 #Github: https://github.com/YoungjunNa
-#Date: 8/25/2017
+#Date: 8/27/2017
 
 #library
 library("XML")
@@ -41,16 +41,20 @@ for(i in 0:(n-1)){
   xmltop3<-xmlRoot(xmlfile3)
   get_hanwoo<-xmlToDataFrame(getNodeSet(xmlfile3,"//item"),stringsAsFactors=FALSE)
   
-  if(is.null(get_hanwoo[1,1]) == FALSE){
+  if(is.null(get_inform[1,1]) == FALSE){
     results[nb,1]<-get_inform$farmNm 
     results[nb,2]<-get_inform$farmAddr
     results[nb,3]<-get_inform$sexNm 
     results[nb,4]<-get_inform$birthYmd
     results[nb,5]<-get_inform$butcheryYmd
-    
-    results[nb,7]<-get_issueNo$animalNo 
-  
     results[nb,6]<-(as.Date(get_inform$butcheryYmd)-as.Date(get_inform$birthYmd))/(365/12)
+  }
+    
+  if(is.null(get_issueNo[1,1]) == FALSE){
+    results[nb,7]<-get_issueNo$animalNo 
+  }
+  
+  if(is.null(get_hanwoo[1,1]) == FALSE){
     results[nb,8]<-get_hanwoo$gradeNm 
     results[nb,9]<-get_hanwoo$qgrade 
     results[nb,10]<-get_hanwoo$wgrade 
@@ -62,6 +66,6 @@ for(i in 0:(n-1)){
 #%>% try(silent=TRUE)
 #%>% system.time()
 
-results<-filter(results, farmerNm != "NA") #delete NA
+results<-filter(results, farmerNm != "NA") #delete NA 
 results_steer<-filter(results, SexNm == "거세") #filtering the steers
 write.csv(results, "results.txt", row.names=FALSE) #write csv
