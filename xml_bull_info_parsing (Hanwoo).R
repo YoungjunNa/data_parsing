@@ -19,3 +19,5 @@ bull_info<-function(KPN){
   
     print(get_inform)
 }
+
+bull_info(634)
