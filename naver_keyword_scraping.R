@@ -2,10 +2,12 @@
 library(rvest)
 library(stringr)
 
-keyword <- "인천"
+keyword <- "문재인"
 keyword <- gsub(" ","+",keyword)
 
 #naver results into dataframe
+
+#1st_depth
 url <- paste0("https://search.naver.com/search.naver?where=nexearch&sm=osp_hty&ie=UTF-8&query=",keyword)
 html <- read_html(url, encoding="UTF-8")
 
