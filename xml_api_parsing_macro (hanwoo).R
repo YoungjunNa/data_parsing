@@ -3,7 +3,7 @@
 #author: Youngjun Na
 #Email: ruminoreticulum@gmail.com
 #Github: https://github.com/YoungjunNa
-#Date: 8/27/2017
+#Last update: 11/14/2017
 
 #library
 library("XML")
@@ -26,12 +26,14 @@ for(i in 0:(n-1)){
   xmlfile1<-xmlParse(url1)
   xmltop1<-xmlRoot(xmlfile1)
   get_inform<-xmlToDataFrame(getNodeSet(xmlfile1,"//item"),stringsAsFactors=FALSE)
+  get_inform<-get_inform[1,]
   
   #import an issueNo
   url2<-paste("http://data.ekape.or.kr/openapi-data/service/user/grade/confirm/issueNo?animalNo=",Cattle_No,"&ServiceKey=",API_key,sep="")
   xmlfile2<-xmlParse(url2)
   xmltop2<-xmlRoot(xmlfile2)
   get_issueNo<-xmlToDataFrame(getNodeSet(xmlfile2,"//item"),stringsAsFactors=FALSE)
+  get_issueNo<-get_issueNo[1,]
   
   Issue_No<-gsub(" ","",as.character(get_issueNo$issueNo)) #OR Issue_No<-stringr::str_trim(as.character(get_issueNo$issueNo))
   
@@ -40,14 +42,13 @@ for(i in 0:(n-1)){
   xmlfile3<-xmlParse(url3)
   xmltop3<-xmlRoot(xmlfile3)
   get_hanwoo<-xmlToDataFrame(getNodeSet(xmlfile3,"//item"),stringsAsFactors=FALSE)
+  get_hanwoo<-get_hanwoo[1,]
   
   if(is.null(get_inform[1,1]) == FALSE){
     results[nb,1]<-get_inform$farmNm 
     results[nb,2]<-get_inform$farmAddr
     results[nb,3]<-get_inform$sexNm 
     results[nb,4]<-get_inform$birthYmd
-    results[nb,5]<-get_inform$butcheryYmd
-    results[nb,6]<-(as.Date(get_inform$butcheryYmd)-as.Date(get_inform$birthYmd))/(365/12)
   }
     
   if(is.null(get_issueNo[1,1]) == FALSE){
@@ -55,13 +56,21 @@ for(i in 0:(n-1)){
   }
   
   if(is.null(get_hanwoo[1,1]) == FALSE){
+    results[nb,5]<-get_inform$butcheryYmd
+    results[nb,6]<-(as.Date(get_inform$butcheryYmd)-as.Date(get_inform$birthYmd))/(365/12)
+    
     results[nb,8]<-get_hanwoo$gradeNm 
     results[nb,9]<-get_hanwoo$qgrade 
+    
+  }
+  
+  if(get_hanwoo$qgrade != "D"){
     results[nb,10]<-get_hanwoo$wgrade 
     results[nb,11]<-as.numeric(get_hanwoo$weight) 
     results[nb,12]<-as.numeric(get_hanwoo$windex)
   }
 } 
+
 
 #%>% try(silent=TRUE)
 #%>% system.time()
