@@ -2,7 +2,7 @@
 library(rvest)
 library(stringr)
 
-keyword <- "문재인"
+keyword <- "청와대"
 keyword <- gsub(" ","+",keyword)
 
 #naver results into dataframe

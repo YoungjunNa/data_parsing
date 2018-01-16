@@ -13,6 +13,7 @@ hanwoo<-function(Cattle_No){
   
   #package
   require("XML")
+  require("cowsay")
   
   #import basic informations
   url1<-paste("http://data.ekape.or.kr/openapi-data/service/user/mtrace/breeding/cattle?cattleNo=",Cattle_No,"&ServiceKey=",API_key,sep="")
@@ -34,6 +35,7 @@ hanwoo<-function(Cattle_No){
   xmltop3<-xmlRoot(xmlfile3)
   get_hanwoo<-xmlToDataFrame(getNodeSet(xmlfile3,"//item"),stringsAsFactors=FALSE)
   
+  say(paste("I'm Hanwoo!","\nMy grade is",get_hanwoo$gradeNm[1],"!!"), by="cow")
   print(get_hanwoo)
   
 }
