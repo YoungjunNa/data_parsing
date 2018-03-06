@@ -64,17 +64,19 @@ for(i in 0:(n-1)){
     
   }
   
-  if(get_hanwoo$qgrade != "D"){
-    results[nb,10]<-get_hanwoo$wgrade 
-    results[nb,11]<-as.numeric(get_hanwoo$weight) 
+  if(is.null(get_hanwoo[1,1]) == FALSE){
+    results[nb,10]<-get_hanwoo$wgrade
+    results[nb,11]<-as.numeric(get_hanwoo$weight)
     results[nb,12]<-as.numeric(get_hanwoo$windex)
   }
 } 
 
 
+get_hanwoo$qgrade != "D" 
+
 #%>% try(silent=TRUE)
 #%>% system.time()
 
-results<-filter(results, farmerNm != "NA") #delete NA 
+results <- filter(results, windex != "NA") #delete NA 
 results_steer<-filter(results, SexNm == "거세") #filtering the steers
 write.csv(results, "results.txt", row.names=FALSE) #write csv
