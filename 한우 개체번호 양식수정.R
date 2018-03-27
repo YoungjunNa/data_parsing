@@ -9,6 +9,12 @@ write.csv(b,"cattle.txt", row.names = FALSE, quote=F) # quote=F 따옴표 제거
 df<-read.table("filepath",colClasses = "character")
 df$var<- paste("00",df$var,sep="")
 
+# OR
+
+a <- 2123456789 %>% str
+sprintf("%012d",a) %>% str
+
+
 # as.numeric
 a<-as.numeric(a$month)
 b<-data.frame(month=f)
